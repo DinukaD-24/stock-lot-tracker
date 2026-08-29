@@ -39,3 +39,27 @@ class Warehouse:
         #adds a new lot to an existing item's inventory
         self.get_item(lot.item_code)#raises ItemNotFoundError if item code does not exist
         self._lots[lot.item_code].append(lot)
+
+    #Inventory Reporting
+    def balance(self, code: str) -> Decimal:
+        #caculates totola cost value of current stock on hand
+        self.get_item(code)
+        return sum((lot.quantity_remaining for lot in self._lots[code]), Decimal("0"))
+
+    def stock_value(self, code: str) -> Decimal:
+        #Calculates total cost value of current stock on hand
+        self.get_item(code)
+        total = sum((lot.quantity_remaining * lot.unit_cost for lot in self._lots[code]), Decimal("0"))
+
+    def average_cost(self, code: str) -> Optional[Decimal]:
+        #Calculates average cost per unit for current stock 
+        self.get_item(code)
+        bal = self.balance(code)
+        if bal == 0:
+            return None #no stock available to calculte average
+        return _money(self.stock_value(code) / bal)
+
+    def lots_for(self, code: str) -> list[Lot]:
+        #returns all lots for an item sorted by arrival date
+        self.get_item(code)
+        return sorted(self._lots[code], key=lambda lot: (lot.received_date, lot.lot_number))
