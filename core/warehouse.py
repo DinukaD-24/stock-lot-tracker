@@ -50,7 +50,7 @@ class Warehouse:
 
         #get available lots sorted by date received (oldest first)
         available_lots = sorted(
-            (lot for lot in self.lots[code] if lot.quantity_remaining > 0), 
+            (lot for lot in self._lots[code] if lot.quantity_remaining > 0), 
             key=lambda lot: (lot.received_date, lot.lot_number),
         )
 

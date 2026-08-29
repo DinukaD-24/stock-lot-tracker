@@ -77,7 +77,7 @@ class Lot:
                 f"Cannot consume {quantity} from lot {self.lot_number}; "
                 f"only {self.uantity_remainning} remaining"
             )
-        self.quanntity_remaining -= quantity
+        self.quantity_remaining -= quantity
 
     def __repr__(self) -> str:
         return (
