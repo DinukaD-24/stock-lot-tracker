@@ -112,3 +112,13 @@ def test_issue_insufficient_stock_raises_and_state_unchanged(warehouse):
     assert warehouse.balance("WIDGET") == Decimal("5")
     lots = warehouse.lots_for("WIDGET")
     assert lots[0].quantity_remaining == Decimal("5")
+
+def test_stock_value_across_lots_different_costs(warehouse):
+    warehouse.receive(
+        Lot("L1", "WIDGET", Decimal("10"), Decimal("2.00"), date(2026, 1, 1))
+    )
+    warehouse.receive(
+        Lot("L2", "WIDGET", Decimal("5"), Decimal("4.00"), date(2026, 1, 2))
+    )
+
+    assert warehouse.stock_value("WIDGET") == Decimal("40.00")
