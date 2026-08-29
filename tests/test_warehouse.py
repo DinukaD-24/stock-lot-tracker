@@ -50,3 +50,22 @@ def test_receive_unknown_item_raises(warehouse):
             unit_cost=Decimal("2.00"),
             received_date=date(2026, 1, 1),
         ))
+
+def test_issue_fifo_spans_two_lots(warehouse):
+    warehouse.receive(
+        Lot("L1", "WIDGET", Decimal("10"), Decimal("2.00"), date(2026, 1, 1))
+    )
+    warehouse.receive(
+        Lot("L2", "WIDGET", Decimal("10"), Decimal("3.00"), date(2026, 1, 5))
+    )
+
+    breakdown = warehouse.issue("WIDGET", Decimal("15"))
+
+    assert len(breakdown) == 2
+    assert breakdown[0]["lot_number"] == "L1"
+    assert breakdown[0]["quantity"] == Decimal("10")
+    assert breakdown[0]["unit_cost"] == Decimal("2.00")
+    assert breakdown[1]["lot_number"] == "L2"
+    assert breakdown[1]["quantity"] == Decimal("5")
+    assert breakdown[1]["unit_cost"] == Decimal("3.00")
+    assert warehouse.balance("WIDGET") == Decimal("5")
