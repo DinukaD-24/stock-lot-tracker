@@ -15,8 +15,8 @@ class Warehouse:
     #manages all items and stock lots in memory
 
     def __init__(self):
-        self.items: dict[str, StockItem] = {}
-        self.lots: dict[str, list[Lot]] = {} # maps item_code -> list of lots
+        self._items: dict[str, StockItem] = {}
+        self._lots: dict[str, list[Lot]] = {} # maps item_code -> list of lots
 
     #Item Management
     def add_item(self, item: StockItem) -> None:
