@@ -40,6 +40,44 @@ class Warehouse:
         self.get_item(lot.item_code)#raises ItemNotFoundError if item code does not exist
         self._lots[lot.item_code].append(lot)
 
+    #Stock issuing (FIFO)
+    def issue(self, code: str, quantity: Decimal) -> list[dict]:
+        #issues stock using First In First Out logic
+        self.get_item(code)
+        quantity = Decimal(str(quantity))
+        if quantity <= 0:
+            raise InvalidQuantityError("Quantity to issue must be greater than zero")
+
+        #get available lots sorted by date received (oldest first)
+        available_lots = sorted(
+            (lot for lot in self.lots[code] if lot.quantity_remaining > 0), 
+            key=lambda lot: (lot.received_date, lot.lot_number),
+        )
+
+        #step1: verify total available stock before making changes
+        total_available = sum((lot.quantity_remaining for lot in available_lots), Decimal("0"))
+        if quantity > total_available:
+            raise InsufficientStockError(f"Cannot issue {quantity} of '{code}'; only {total_available} on hand")
+
+        #step2: deduct stock from oldest lots first
+        remaining_to_issue = quantity
+        breakdown =[]
+        for lot in available_lots:
+            if remaining_to_issue <= 0:
+                break
+            take = min(lot.quantity_remaining, remaining_to_issue)
+            lot.consume(take)
+            breakdown.append(
+                {
+                    "lot_number": lot.lot_number,
+                    "quantity": take,
+                    "unit_cost": lot.unit_cost,
+                }
+            )
+            remaining_to_issue -= take
+
+        return breakdown
+
     #Inventory Reporting
     def balance(self, code: str) -> Decimal:
         #caculates totola cost value of current stock on hand
