@@ -122,3 +122,18 @@ def test_stock_value_across_lots_different_costs(warehouse):
     )
 
     assert warehouse.stock_value("WIDGET") == Decimal("40.00")
+
+def test_average_cost_after_partial_issue(warehouse):
+    warehouse.receive(
+        Lot("L1", "WIDGET", Decimal("10"), Decimal("2.00"), date(2026, 1, 1))
+    )
+    warehouse.receive(
+        Lot("L2", "WIDGET", Decimal("10"), Decimal("4.00"), date(2026, 1, 2))
+    )
+
+    warehouse.issue("WIDGET", Decimal("10"))
+
+    assert warehouse.average_cost("WIDGET") == Decimal("4.00")
+
+def test_average_cost_is_none_when_no_stock(warehouse):
+    assert warehouse.average_cost("WIDGET") is None
