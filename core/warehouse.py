@@ -87,7 +87,8 @@ class Warehouse:
     def stock_value(self, code: str) -> Decimal:
         #Calculates total cost value of current stock on hand
         self.get_item(code)
-        total = sum((lot.quantity_remaining * lot.unit_cost for lot in self._lots[code]), Decimal("0"))
+        total = sum((lot.quantity_remaining * lot.unit_cost for lot in self._lots[code]), Decimal("0"),)
+        return _money(total)
 
     def average_cost(self, code: str) -> Optional[Decimal]:
         #Calculates average cost per unit for current stock 
