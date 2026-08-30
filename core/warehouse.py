@@ -72,6 +72,7 @@ class Warehouse:
                     "lot_number": lot.lot_number,
                     "quantity": take,
                     "unit_cost": lot.unit_cost,
+                    "quantity_remaining_after": lot.quantity_remaining,
                 }
             )
             remaining_to_issue -= take
