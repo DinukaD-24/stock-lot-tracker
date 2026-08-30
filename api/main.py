@@ -42,5 +42,5 @@ from api.routes import issue, items, lots, stock #noqa: E402
 
 app.include_router(items.router)
 app.include_router(lots.router)
-#app.include_router(issue.router)
+app.include_router(issue.router)
 #app.include_router(stock.router)
