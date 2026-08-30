@@ -30,7 +30,7 @@ def get_stock(wh: Warehouse = Depends(get_warehouse)):
     return result
 
 #GET / stock/{code}/lots gets all individual batch records for specific item code
-@router.get("/stock/{code}/lots", response_model=[LotOut])
+@router.get("/stock/{code}/lots", response_model=list[LotOut])
 def get_stock_lots(code: str, wh: Warehouse = Depends(get_warehouse)):
     #lots_for() will raise ItemNotFOundError if the item code does not exist
     # Our global error handler in main.py automatically turns that into a 400 error response
